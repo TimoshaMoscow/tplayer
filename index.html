@@ -1445,17 +1445,17 @@ if (typeof window !== 'undefined') {
             }, 3000);
         }
         
-        // Тестовое видео для демо
+        // Локальное видео для демо (один файл для всех качеств)
         const testVideoUrls = {
-            '360p': 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-            '720p': 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerEscapes.mp4',
-            '1080p': 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerFunflies.mp4'
+            '360p': 'test.mp4',
+            '720p': 'test.mp4',
+            '1080p': 'test.mp4'
         };
-        
-        // Инициализация плеера с демо-видео
+
+        // Инициализация плеера с локальным видео
         const player = new TPlayer('#player-container', {
             sources: testVideoUrls,
-            poster: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1280',
+            poster: 'poster.jpg',  // Можно указать путь к локальному постеру, например 'poster.jpg'
             accentColor: '#ff0000'
         });
         
