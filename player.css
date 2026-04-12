@@ -1,0 +1,323 @@
+/**
+ * ================================================================
+ * Разработано TStudios
+ * TPlayer - Стили профессионального видеоплеера
+ * Версия: 1.0.0
+ * ================================================================
+ */
+
+/* Контейнер плеера */
+.tplayer-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    background: #000;
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+}
+
+/* Основной плеер */
+.tplayer {
+    position: relative;
+    width: 100%;
+    background: #000;
+    cursor: default;
+    user-select: none;
+}
+
+/* Видео элемент */
+.tplayer-video {
+    width: 100%;
+    height: auto;
+    display: block;
+    cursor: pointer;
+}
+
+/* Контроллы */
+.tplayer-controls {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: linear-gradient(to top, rgba(0, 0, 0, 0.9), transparent);
+    padding: 20px 16px 12px;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s ease, visibility 0.3s ease;
+    z-index: 10;
+}
+
+.tplayer-controls.visible {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Контейнер прогресса */
+.tplayer-progress-container {
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Прогресс бар */
+.tplayer-progress-bar {
+    flex: 1;
+    position: relative;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    transition: height 0.2s ease;
+}
+
+.tplayer-progress-bar:hover {
+    height: 6px;
+}
+
+.tplayer-progress-buffered {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.3);
+    border-radius: 2px;
+    width: 0%;
+}
+
+.tplayer-progress-filled {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #ff0000;
+    border-radius: 2px;
+    width: 0%;
+    transition: width 0.1s linear;
+}
+
+.tplayer-progress-handle {
+    position: absolute;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    width: 12px;
+    height: 12px;
+    background: #ff0000;
+    border-radius: 50%;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    cursor: pointer;
+    box-shadow: 0 0 10px rgba(255, 0, 0, 0.5);
+}
+
+.tplayer-progress-bar:hover .tplayer-progress-handle {
+    opacity: 1;
+}
+
+/* Время */
+.tplayer-time {
+    font-size: 12px;
+    color: #fff;
+    font-family: monospace;
+    white-space: nowrap;
+}
+
+/* Нижняя панель контроллов */
+.tplayer-controls-bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.tplayer-controls-left,
+.tplayer-controls-right {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+/* Кнопки */
+.tplayer-play-btn,
+.tplayer-volume-btn,
+.tplayer-settings-btn,
+.tplayer-fullscreen-btn {
+    background: none;
+    border: none;
+    color: #fff;
+    cursor: pointer;
+    padding: 4px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+    border-radius: 4px;
+}
+
+.tplayer-play-btn:hover,
+.tplayer-volume-btn:hover,
+.tplayer-settings-btn:hover,
+.tplayer-fullscreen-btn:hover {
+    transform: scale(1.05);
+    opacity: 0.8;
+}
+
+.tplayer-icon {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+/* Контейнер громкости */
+.tplayer-volume-container {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.tplayer-volume-slider {
+    width: 80px;
+    height: 4px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+    cursor: pointer;
+    position: relative;
+}
+
+.tplayer-volume-progress {
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    background: #ff0000;
+    border-radius: 2px;
+    width: 100%;
+}
+
+/* Меню настроек */
+.tplayer-settings-menu {
+    position: absolute;
+    bottom: 70px;
+    right: 16px;
+    background: rgba(28, 28, 28, 0.95);
+    backdrop-filter: blur(10px);
+    border-radius: 8px;
+    padding: 12px 0;
+    min-width: 200px;
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(10px);
+    transition: all 0.2s ease;
+    z-index: 20;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.tplayer-settings-menu.active {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+}
+
+.tplayer-settings-menu-inner {
+    display: flex;
+    flex-direction: column;
+}
+
+.tplayer-settings-section {
+    padding: 8px 16px;
+}
+
+.tplayer-settings-title {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.tplayer-speed-menu,
+.tplayer-quality-menu {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.tplayer-speed-menu button,
+.tplayer-quality-menu button {
+    background: rgba(255, 255, 255, 0.1);
+    border: none;
+    color: #fff;
+    padding: 6px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.tplayer-speed-menu button:hover,
+.tplayer-quality-menu button:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+.tplayer-speed-menu button.active,
+.tplayer-quality-menu button.active {
+    background: #ff0000;
+}
+
+.tplayer-settings-footer {
+    text-align: center;
+    padding: 12px 16px 8px;
+    font-size: 11px;
+    color: rgba(255, 255, 255, 0.5);
+    border-top: 1px solid rgba(255, 255, 255, 0.1);
+    margin-top: 8px;
+}
+
+/* Индикатор загрузки */
+.tplayer-loading {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.2s ease;
+    z-index: 15;
+}
+
+.tplayer-loading.active {
+    opacity: 1;
+    visibility: visible;
+}
+
+.tplayer-spinner {
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(255, 255, 255, 0.3);
+    border-top-color: #fff;
+    border-radius: 50%;
+    animation: tplayer-spin 0.8s linear infinite;
+}
+
+@keyframes tplayer-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .tplayer-volume-slider {
+        width: 60px;
+    }
+    
+    .tplayer-settings-menu {
+        min-width: 180px;
+        bottom: 60px;
+    }
+    
+    .tplayer-controls {
+        padding: 16px 12px 10px;
+    }
+}
