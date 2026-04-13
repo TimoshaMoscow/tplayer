@@ -25,7 +25,6 @@
             scroll-behavior: smooth;
         }
         
-        /* Навигация */
         .navbar {
             position: fixed;
             top: 0;
@@ -70,14 +69,12 @@
             color: #ff0000;
         }
         
-        /* Контейнер */
         .container {
             max-width: 1200px;
             margin: 0 auto;
             padding: 80px 24px 40px;
         }
         
-        /* Hero секция */
         .hero {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -160,7 +157,6 @@
             box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
         }
         
-        /* Секция возможностей */
         .features {
             margin-bottom: 80px;
         }
@@ -211,7 +207,6 @@
             font-size: 14px;
         }
         
-        /* Секция быстрый старт */
         .quick-start {
             margin-bottom: 80px;
             background: rgba(0, 0, 0, 0.3);
@@ -265,7 +260,6 @@
             margin-bottom: 16px;
         }
         
-        /* Секция скачивания */
         .download-section {
             margin-bottom: 80px;
             background: linear-gradient(135deg, rgba(255, 0, 0, 0.1), rgba(0, 0, 0, 0.5));
@@ -322,7 +316,6 @@
             margin-top: 8px;
         }
         
-        /* Футер */
         .footer {
             background: rgba(0, 0, 0, 0.5);
             padding: 48px 24px 24px;
@@ -350,12 +343,6 @@
             font-size: 14px;
         }
         
-        .current-year {
-            font-weight: bold;
-            color: #ff0000;
-        }
-        
-        /* Уведомление */
         .toast {
             position: fixed;
             bottom: 20px;
@@ -380,7 +367,6 @@
             }
         }
         
-        /* Адаптивность */
         @media (max-width: 768px) {
             .hero {
                 grid-template-columns: 1fr;
@@ -412,7 +398,6 @@
             }
         }
         
-        /* Анимации */
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -443,7 +428,6 @@
     </nav>
     
     <div class="container">
-        <!-- Hero секция -->
         <section class="hero" id="demo">
             <div class="hero-content">
                 <h1>TPlayer</h1>
@@ -459,7 +443,6 @@
             </div>
         </section>
         
-        <!-- Возможности -->
         <section id="features" class="features">
             <h2 class="section-title">Ключевые возможности</h2>
             <div class="features-grid">
@@ -470,13 +453,13 @@
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎬</div>
-                    <h3>Бесшовная смена качества</h3>
-                    <p>Смена качества без остановки воспроизведения</p>
+                    <h3>Умное определение качества</h3>
+                    <p>Автоматически определяет качество видео и предлагает доступные опции</p>
                 </div>
                 <div class="feature-card">
-                    <div class="feature-icon">🚀</div>
-                    <h3>Управление скоростью</h3>
-                    <p>Скорость воспроизведения от 0.5x до 2x</p>
+                    <div class="feature-icon">🔄</div>
+                    <h3>Сжатие видео на лету</h3>
+                    <p>При выборе низкого качества видео сжимается без потери синхронизации</p>
                 </div>
                 <div class="feature-card">
                     <div class="feature-icon">🎨</div>
@@ -496,7 +479,6 @@
             </div>
         </section>
         
-        <!-- Секция скачивания -->
         <section id="download" class="download-section">
             <h2>📦 Скачать TPlayer</h2>
             <p>Получите готовые файлы библиотеки и начните использовать в своём проекте</p>
@@ -505,7 +487,7 @@
                     <h3>📄 player.js</h3>
                     <p>Основной код библиотеки (ES6 класс)</p>
                     <button class="btn btn-primary" onclick="downloadFile('player.js', 'js')">Скачать JS</button>
-                    <div class="file-size">~15 KB</div>
+                    <div class="file-size">~18 KB</div>
                 </div>
                 <div class="download-card">
                     <h3>🎨 player.css</h3>
@@ -517,12 +499,11 @@
                     <h3>📦 Полный пакет</h3>
                     <p>Оба файла одним архивом</p>
                     <button class="btn btn-success" onclick="downloadFullPackage()">Скачать ZIP</button>
-                    <div class="file-size">~19 KB</div>
+                    <div class="file-size">~22 KB</div>
                 </div>
             </div>
         </section>
         
-        <!-- Быстрый старт -->
         <section id="quick-start" class="quick-start">
             <h2 class="section-title">Быстрый старт</h2>
             <div class="steps">
@@ -534,6 +515,8 @@
                         <pre>📁 Ваш проект/
   ├── player.js
   ├── player.css
+  ├── test.mp4
+  ├── poster.jpg
   └── index.html</pre>
                     </div>
                 </div>
@@ -561,18 +544,21 @@
                     <div class="code-block">
                         <pre>const player = new TPlayer('#my-player', {
     sources: {
-        '360p': 'video-360.mp4',
-        '720p': 'video-720.mp4',
-        '1080p': 'video-1080.mp4'
+        '360p': 'test.mp4',
+        '720p': 'test.mp4',
+        '1080p': 'test.mp4'
     },
     poster: 'poster.jpg',
     accentColor: '#ff0000'
-});</pre>
+});
+
+// Плеер сам определит реальное качество видео
+// и предложит только доступные опции</pre>
                     </div>
                 </div>
             </div>
             <div style="margin-top: 32px; padding: 16px; background: rgba(255,0,0,0.1); border-radius: 8px; border-left: 4px solid #ff0000;">
-                <strong>💡 Совет:</strong> Убедитесь, что ваши видеофайлы доступны по указанным путям. Плеер автоматически выберет лучшее доступное качество.
+                <strong>💡 Умное качество:</strong> Плеер автоматически определяет реальное качество вашего видео и показывает только доступные опции. При выборе более низкого качества видео сжимается на лету!
             </div>
         </section>
     </div>
@@ -581,7 +567,7 @@
         <div class="footer-content">
             <div class="footer-logo">TStudios</div>
             <div class="footer-text">
-                <p>© <span class="current-year" id="current-year">2026</span> TStudios. Профессиональные решения для ваших проектов.</p>
+                <p>© 2026 TStudios. Профессиональные решения для ваших проектов.</p>
                 <p style="margin-top: 8px;">TPlayer — современный видеоплеер с открытым исходным кодом</p>
             </div>
         </div>
@@ -594,15 +580,20 @@
         // Разработано TStudios
         // ================================================================
         
-        // Установка текущего года в футере
-        const currentYearSpan = document.getElementById('current-year');
-        if (currentYearSpan) {
-            currentYearSpan.textContent = new Date().getFullYear();
-        }
+        // Инициализация плеера с локальным тестовым видео
+        // Плеер сам определит реальное качество video.mp4
+        const player = new TPlayer('#player-container', {
+            sources: {
+                '360p': 'test.mp4',
+                '720p': 'test.mp4',
+                '1080p': 'test.mp4'
+            },
+            poster: 'poster.jpg',
+            accentColor: '#ff0000'
+        });
         
         // Функция для скачивания файлов
         function downloadFile(filename, type) {
-            // Содержимое файлов (берём из текущей страницы или генерируем)
             let content = '';
             
             if (type === 'js') {
@@ -628,8 +619,6 @@
             const jsContent = getPlayerJSContent();
             const cssContent = getPlayerCSSContent();
             
-            // Создаём ZIP архив вручную через JSZip
-            // Используем CDN для JSZip
             const script = document.createElement('script');
             script.src = 'https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js';
             script.onload = () => {
@@ -657,7 +646,7 @@
  * ================================================================
  * Разработано TStudios
  * TPlayer - Профессиональная JavaScript библиотека видеоплеера
- * Версия: 1.0.0
+ * Версия: 2.0.0
  * Лицензия: MIT
  * ================================================================
  */
@@ -689,8 +678,9 @@ class TPlayer {
         this.isControlsVisible = true;
         this.controlsTimeout = null;
         
-        this.qualities = ['1080p', '720p', '360p'];
+        this.qualityLevels = ['144p', '240p', '360p', '480p', '720p', '1080p', '1440p', '2160p'];
         this.availableQualities = [];
+        this.originalVideoUrl = null;
         this.speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
         
         this.init();
@@ -700,10 +690,10 @@ class TPlayer {
         this.createDOM();
         this.bindEvents();
         this.setupHotkeys();
-        this.updateQualityMenu();
         this.updateSpeedMenu();
         this.applyAccentColor();
         this.showControls();
+        this.detectVideoQuality();
     }
     
     createDOM() {
@@ -827,16 +817,55 @@ class TPlayer {
         \`;
     }
     
+    detectVideoQuality() {
+        this.video.addEventListener('loadedmetadata', () => {
+            const videoWidth = this.video.videoWidth;
+            const videoHeight = this.video.videoHeight;
+            
+            let detectedQuality = '360p';
+            if (videoHeight <= 144) detectedQuality = '144p';
+            else if (videoHeight <= 240) detectedQuality = '240p';
+            else if (videoHeight <= 360) detectedQuality = '360p';
+            else if (videoHeight <= 480) detectedQuality = '480p';
+            else if (videoHeight <= 720) detectedQuality = '720p';
+            else if (videoHeight <= 1080) detectedQuality = '1080p';
+            else if (videoHeight <= 1440) detectedQuality = '1440p';
+            else detectedQuality = '2160p';
+            
+            console.log(\`TPlayer: Определено качество видео - \${detectedQuality} (\${videoWidth}x\${videoHeight})\`);
+            
+            this.originalVideoUrl = this.video.src;
+            
+            const qualityIndex = this.qualityLevels.indexOf(detectedQuality);
+            this.availableQualities = this.qualityLevels.slice(0, qualityIndex + 1);
+            
+            if (Object.keys(this.options.sources).length > 0) {
+                const customQualities = Object.keys(this.options.sources);
+                this.availableQualities = customQualities.filter(q => 
+                    this.qualityLevels.includes(q) && 
+                    this.qualityLevels.indexOf(q) <= qualityIndex
+                );
+                if (this.availableQualities.length === 0) {
+                    this.availableQualities = customQualities;
+                }
+            }
+            
+            this.currentQuality = this.availableQualities[this.availableQualities.length - 1];
+            this.updateQualityMenu();
+            
+            console.log(\`TPlayer: Доступные качества: \${this.availableQualities.join(', ')}\`);
+            console.log(\`TPlayer: Текущее качество: \${this.currentQuality}\`);
+        });
+    }
+    
     setInitialSource() {
-        this.availableQualities = this.qualities.filter(q => this.options.sources[q]);
-        
-        if (this.availableQualities.length === 0) {
-            console.error('TPlayer: Нет доступных источников видео!');
-            return;
+        const sourcesKeys = Object.keys(this.options.sources);
+        if (sourcesKeys.length > 0) {
+            this.video.src = this.options.sources[sourcesKeys[0]];
+        } else {
+            this.video.src = 'test.mp4';
+            this.options.sources = { 'original': 'test.mp4' };
         }
-        
-        this.currentQuality = this.availableQualities[0];
-        this.video.src = this.options.sources[this.currentQuality];
     }
     
     bindEvents() {
@@ -946,22 +975,114 @@ class TPlayer {
         });
     }
     
-    changeQuality(quality) {
-        if (quality === this.currentQuality || !this.options.sources[quality]) return;
+    async changeQuality(quality) {
+        if (quality === this.currentQuality) return;
         
         const currentTime = this.video.currentTime;
         const wasPlaying = !this.video.paused;
         
-        this.currentQuality = quality;
-        this.video.src = this.options.sources[quality];
+        const qualityHeight = this.getQualityHeight(quality);
+        const originalHeight = this.video.videoHeight;
         
-        this.video.addEventListener('loadedmetadata', () => {
+        if (qualityHeight >= originalHeight) {
+            this.video.src = this.originalVideoUrl;
+            this.currentQuality = quality;
+            
+            this.video.addEventListener('loadedmetadata', () => {
+                this.video.currentTime = currentTime;
+                if (wasPlaying) this.video.play();
+                this.updateQualityMenu();
+            }, { once: true });
+            return;
+        }
+        
+        this.showLoading();
+        
+        try {
+            const tempVideo = document.createElement('video');
+            tempVideo.src = this.originalVideoUrl;
+            tempVideo.crossOrigin = 'Anonymous';
+            
+            await new Promise((resolve) => {
+                tempVideo.addEventListener('loadedmetadata', resolve);
+            });
+            
+            tempVideo.currentTime = currentTime;
+            
+            await new Promise((resolve) => {
+                tempVideo.addEventListener('seeked', resolve);
+            });
+            
+            const canvas = document.createElement('canvas');
+            const ctx = canvas.getContext('2d');
+            
+            const scaleFactor = qualityHeight / originalHeight;
+            canvas.width = this.video.videoWidth * scaleFactor;
+            canvas.height = qualityHeight;
+            
+            const stream = canvas.captureStream(30);
+            const mediaRecorder = new MediaRecorder(stream, {
+                mimeType: 'video/webm',
+                videoBitsPerSecond: 2500000
+            });
+            
+            const chunks = [];
+            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            
+            const recordedVideo = new Promise((resolve) => {
+                mediaRecorder.onstop = () => {
+                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const url = URL.createObjectURL(blob);
+                    resolve(url);
+                };
+            });
+            
+            mediaRecorder.start();
+            
+            const duration = Math.min(10, this.video.duration - currentTime);
+            const startTime = currentTime;
+            
+            const captureFrame = () => {
+                if (tempVideo.currentTime >= startTime + duration || tempVideo.ended) {
+                    mediaRecorder.stop();
+                    return;
+                }
+                
+                ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+                requestAnimationFrame(captureFrame);
+            };
+            
+            tempVideo.play();
+            captureFrame();
+            
+            const compressedUrl = await recordedVideo;
+            tempVideo.pause();
+            
+            this.video.src = compressedUrl;
+            this.currentQuality = quality;
+            
+            this.video.addEventListener('loadedmetadata', () => {
+                this.video.currentTime = currentTime;
+                if (wasPlaying) this.video.play();
+                this.updateQualityMenu();
+                this.hideLoading();
+            }, { once: true });
+            
+        } catch (error) {
+            console.error('TPlayer: Ошибка при сжатии видео:', error);
+            this.hideLoading();
+            this.video.src = this.originalVideoUrl;
             this.video.currentTime = currentTime;
-            if (wasPlaying) {
-                this.video.play();
-            }
-            this.updateQualityMenu();
-        }, { once: true });
+            if (wasPlaying) this.video.play();
+        }
+    }
+    
+    getQualityHeight(quality) {
+        const heights = {
+            '144p': 144, '240p': 240, '360p': 360, '480p': 480,
+            '720p': 720, '1080p': 1080, '1440p': 1440, '2160p': 2160
+        };
+        return heights[quality] || 720;
     }
     
     changeSpeed(speed) {
@@ -995,9 +1116,11 @@ class TPlayer {
         if (isPlaying) {
             playIcon.style.display = 'none';
             pauseIcon.style.display = 'block';
+            this.playBtn.title = 'Пауза (Пробел)';
         } else {
             playIcon.style.display = 'block';
             pauseIcon.style.display = 'none';
+            this.playBtn.title = 'Воспроизвести (Пробел)';
         }
     }
     
@@ -1008,6 +1131,7 @@ class TPlayer {
     toggleMute() {
         this.video.muted = !this.video.muted;
         this.isMuted = this.video.muted;
+        this.updateVolumeIcon();
     }
     
     setVolume(e) {
@@ -1016,6 +1140,12 @@ class TPlayer {
         const volume = x / rect.width;
         this.video.volume = volume;
         this.volumeProgress.style.width = \`\${volume * 100}%\`;
+        this.isMuted = volume === 0;
+        this.updateVolumeIcon();
+    }
+    
+    updateVolumeIcon() {
+        this.volumeBtn.title = this.isMuted ? 'Включить звук (M)' : 'Выключить звук (M)';
     }
     
     updateProgress() {
@@ -1110,6 +1240,7 @@ class TPlayer {
         this.video.pause();
         this.video.src = '';
         this.container.innerHTML = '';
+        console.log('TPlayer: Плеер уничтожен');
     }
 }
 
@@ -1126,7 +1257,7 @@ if (typeof window !== 'undefined') {
  * ================================================================
  * Разработано TStudios
  * TPlayer - Стили профессионального видеоплеера
- * Версия: 1.0.0
+ * Версия: 2.0.0
  * ================================================================
  */
 
@@ -1445,21 +1576,6 @@ if (typeof window !== 'undefined') {
             }, 3000);
         }
         
-        // Локальное видео для демо (один файл для всех качеств)
-        const testVideoUrls = {
-            '360p': 'test.mp4',
-            '720p': 'test.mp4',
-            '1080p': 'test.mp4'
-        };
-
-        // Инициализация плеера с локальным видео
-        const player = new TPlayer('#player-container', {
-            sources: testVideoUrls,
-            poster: 'poster.jpg',  // Можно указать путь к локальному постеру, например 'poster.jpg'
-            accentColor: '#ff0000'
-        });
-        
-        // Плавный скролл для навигации
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function (e) {
                 e.preventDefault();
