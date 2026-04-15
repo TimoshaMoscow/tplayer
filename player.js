@@ -2,7 +2,7 @@
  * ================================================================
  * Разработано TStudios
  * TPlayer - Профессиональная JavaScript библиотека видеоплеера
- * Версия: 2.0.0
+ * Версия: 2.1.0
  * Лицензия: MIT
  * ================================================================
  */
@@ -12,7 +12,7 @@ class TPlayer {
      * Конструктор класса TPlayer
      * @param {string|HTMLElement} selector - CSS селектор или DOM элемент контейнера
      * @param {Object} options - Опции конфигурации плеера
-     * @param {Object} options.sources - Объект с ссылками на видео {360p, 720p, 1080p}
+     * @param {string|Object} options.source - Путь к видео файлу (строка) или объект с разными качествами
      * @param {string} options.poster - URL постера видео
      * @param {string} options.accentColor - Акцентный цвет (CSS цвет, по умолчанию '#ff0000')
      */
@@ -28,7 +28,7 @@ class TPlayer {
         }
         
         this.options = {
-            sources: options.sources || {},
+            source: options.source || options.sources || 'test.mp4',
             poster: options.poster || '',
             accentColor: options.accentColor || '#ff0000'
         };
@@ -37,15 +37,18 @@ class TPlayer {
         this.isMuted = false;
         this.volume = 1;
         this.currentQuality = null;
+        this.originalQuality = null;
         this.currentSpeed = 1;
         this.isFullscreen = false;
         this.isControlsVisible = true;
         this.controlsTimeout = null;
+        this.compressedVideoUrl = null;
         
         // Доступные качества (в порядке возрастания)
         this.qualityLevels = ['144p', '240p', '360p', '480p', '720p', '1080p', '1440p', '2160p'];
         this.availableQualities = [];
         this.originalVideoUrl = null;
+        this.originalVideoHeight = null;
         
         // Доступные скорости
         this.speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
@@ -210,6 +213,7 @@ class TPlayer {
         this.video.addEventListener('loadedmetadata', () => {
             const videoWidth = this.video.videoWidth;
             const videoHeight = this.video.videoHeight;
+            this.originalVideoHeight = videoHeight;
             
             // Определяем качество на основе высоты видео
             let detectedQuality = '360p';
@@ -226,31 +230,23 @@ class TPlayer {
             
             // Сохраняем оригинальный URL видео
             this.originalVideoUrl = this.video.src;
+            this.originalQuality = detectedQuality;
             
             // Создаем доступные качества (от 144p до определенного качества)
             const qualityIndex = this.qualityLevels.indexOf(detectedQuality);
             this.availableQualities = this.qualityLevels.slice(0, qualityIndex + 1);
             
-            // Если в options.sources есть переопределения, используем их
-            if (Object.keys(this.options.sources).length > 0) {
-                const customQualities = Object.keys(this.options.sources);
-                this.availableQualities = customQualities.filter(q => 
-                    this.qualityLevels.includes(q) && 
-                    this.qualityLevels.indexOf(q) <= qualityIndex
-                );
-                if (this.availableQualities.length === 0) {
-                    this.availableQualities = customQualities;
-                }
-            }
+            // Добавляем опцию "Оригинал" в начало списка
+            this.availableQualities.unshift('Оригинал');
             
-            // Устанавливаем текущее качество как максимальное доступное
-            this.currentQuality = this.availableQualities[this.availableQualities.length - 1];
+            // Устанавливаем текущее качество как "Оригинал"
+            this.currentQuality = 'Оригинал';
             
             // Обновляем меню качества
             this.updateQualityMenu();
             
             console.log(`TPlayer: Доступные качества: ${this.availableQualities.join(', ')}`);
-            console.log(`TPlayer: Текущее качество: ${this.currentQuality}`);
+            console.log(`TPlayer: Текущее качество: ${this.currentQuality} (${detectedQuality})`);
         });
     }
     
@@ -258,15 +254,19 @@ class TPlayer {
      * Установка начального источника видео
      */
     setInitialSource() {
-        // Получаем первое доступное качество из sources или используем test.mp4
-        const sourcesKeys = Object.keys(this.options.sources);
-        if (sourcesKeys.length > 0) {
-            this.video.src = this.options.sources[sourcesKeys[0]];
+        // Определяем источник видео
+        let videoSource = '';
+        if (typeof this.options.source === 'string') {
+            videoSource = this.options.source;
+        } else if (typeof this.options.source === 'object') {
+            // Для обратной совместимости с объектом sources
+            const sourcesKeys = Object.keys(this.options.source);
+            videoSource = sourcesKeys.length > 0 ? this.options.source[sourcesKeys[0]] : 'test.mp4';
         } else {
-            // Если sources не указаны, используем test.mp4 по умолчанию
-            this.video.src = 'test.mp4';
-            this.options.sources = { 'original': 'test.mp4' };
+            videoSource = 'test.mp4';
         }
+        
+        this.video.src = videoSource;
     }
     
     /**
@@ -392,8 +392,24 @@ class TPlayer {
     }
     
     /**
+     * Получение высоты видео для качества
+     */
+    getQualityHeight(quality) {
+        const heights = {
+            '144p': 144,
+            '240p': 240,
+            '360p': 360,
+            '480p': 480,
+            '720p': 720,
+            '1080p': 1080,
+            '1440p': 1440,
+            '2160p': 2160
+        };
+        return heights[quality] || this.originalVideoHeight;
+    }
+    
+    /**
      * Сжатие видео для более низкого качества
-     * Создает canvas элемент и перекодирует видео в нужное разрешение
      */
     async changeQuality(quality) {
         if (quality === this.currentQuality) return;
@@ -401,12 +417,27 @@ class TPlayer {
         const currentTime = this.video.currentTime;
         const wasPlaying = !this.video.paused;
         
-        // Получаем целевое разрешение для выбранного качества
-        const qualityHeight = this.getQualityHeight(quality);
-        const originalHeight = this.video.videoHeight;
+        // Если выбран "Оригинал" - возвращаем исходное видео
+        if (quality === 'Оригинал') {
+            this.video.src = this.originalVideoUrl;
+            this.currentQuality = quality;
+            
+            this.video.addEventListener('loadedmetadata', () => {
+                this.video.currentTime = currentTime;
+                if (wasPlaying) this.video.play();
+                this.updateQualityMenu();
+                if (this.compressedVideoUrl) {
+                    URL.revokeObjectURL(this.compressedVideoUrl);
+                    this.compressedVideoUrl = null;
+                }
+            }, { once: true });
+            return;
+        }
         
-        // Если выбранное качество выше оригинального, используем оригинал
-        if (qualityHeight >= originalHeight) {
+        const qualityHeight = this.getQualityHeight(quality);
+        
+        // Если выбранное качество выше или равно оригинальному, используем оригинал
+        if (qualityHeight >= this.originalVideoHeight) {
             this.video.src = this.originalVideoUrl;
             this.currentQuality = quality;
             
@@ -441,11 +472,11 @@ class TPlayer {
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            const scaleFactor = qualityHeight / originalHeight;
+            const scaleFactor = qualityHeight / this.originalVideoHeight;
             canvas.width = this.video.videoWidth * scaleFactor;
             canvas.height = qualityHeight;
             
-            // Функция для захвата и перекодирования видео
+            // Создаем поток для записи
             const stream = canvas.captureStream(30);
             const mediaRecorder = new MediaRecorder(stream, {
                 mimeType: 'video/webm',
@@ -465,10 +496,9 @@ class TPlayer {
             
             mediaRecorder.start();
             
-            // Захватываем кадры с tempVideo и рисуем на canvas
+            // Захватываем кадры
             const duration = Math.min(10, this.video.duration - currentTime);
             const startTime = currentTime;
-            let frameCount = 0;
             
             const captureFrame = () => {
                 if (tempVideo.currentTime >= startTime + duration || tempVideo.ended) {
@@ -477,7 +507,6 @@ class TPlayer {
                 }
                 
                 ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
-                frameCount++;
                 requestAnimationFrame(captureFrame);
             };
             
@@ -487,7 +516,12 @@ class TPlayer {
             const compressedUrl = await recordedVideo;
             tempVideo.pause();
             
-            // Устанавливаем сжатое видео
+            // Освобождаем предыдущий сжатый URL если есть
+            if (this.compressedVideoUrl) {
+                URL.revokeObjectURL(this.compressedVideoUrl);
+            }
+            
+            this.compressedVideoUrl = compressedUrl;
             this.video.src = compressedUrl;
             this.currentQuality = quality;
             
@@ -506,23 +540,6 @@ class TPlayer {
             this.video.currentTime = currentTime;
             if (wasPlaying) this.video.play();
         }
-    }
-    
-    /**
-     * Получение высоты видео для качества
-     */
-    getQualityHeight(quality) {
-        const heights = {
-            '144p': 144,
-            '240p': 240,
-            '360p': 360,
-            '480p': 480,
-            '720p': 720,
-            '1080p': 1080,
-            '1440p': 1440,
-            '2160p': 2160
-        };
-        return heights[quality] || 720;
     }
     
     /**
@@ -745,6 +762,9 @@ class TPlayer {
     destroy() {
         this.video.pause();
         this.video.src = '';
+        if (this.compressedVideoUrl) {
+            URL.revokeObjectURL(this.compressedVideoUrl);
+        }
         this.container.innerHTML = '';
         console.log('TPlayer: Плеер уничтожен');
     }
