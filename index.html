@@ -3,342 +3,237 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
-    <title>TPlayer — Современный видеоплеер от TStudios</title>
+    <title>TPlayer | Современный видеоплеер от TStudios</title>
     
-    <!-- TPlayer CDN -->
+    <!-- Подключение TPlayer -->
     <link rel="stylesheet" href="https://timoshamoscow.github.io/tplayer/player.css">
     
     <style>
-        /* ========================================
-         * TPlayer Landing Styles
+        /* ================================================================
+         * Стили лендинга TPlayer
          * Разработано TStudios
-         * ======================================== */
+         * ================================================================ */
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
-        
+
         body {
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             background: #0a0a0a;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', sans-serif;
             color: #fff;
             line-height: 1.5;
-            scroll-behavior: smooth;
         }
-        
-        /* Typography */
-        h1, h2, h3 {
-            font-weight: 600;
-            letter-spacing: -0.02em;
-        }
-        
-        /* Navigation */
-        .nav {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            background: rgba(10, 10, 10, 0.95);
-            backdrop-filter: blur(12px);
-            z-index: 100;
-            padding: 16px 32px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
-        }
-        
-        .nav-inner {
-            max-width: 1200px;
-            margin: 0 auto;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-        
-        .logo {
-            font-size: 24px;
-            font-weight: 700;
-            background: linear-gradient(135deg, #fff, #ff3b3b);
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-        
-        .nav-links {
-            display: flex;
-            gap: 32px;
-        }
-        
-        .nav-links a {
-            color: rgba(255, 255, 255, 0.7);
-            text-decoration: none;
-            transition: color 0.2s;
-            font-size: 14px;
-        }
-        
-        .nav-links a:hover {
-            color: #ff3b3b;
-        }
-        
-        /* Container */
+
+        /* Контейнер */
         .container {
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto;
             padding: 80px 24px 40px;
         }
-        
-        /* Hero Section */
-        .hero {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 60px;
-            align-items: center;
-            min-height: 85vh;
-            margin-bottom: 100px;
+
+        /* Шапка */
+        .header {
+            text-align: center;
+            margin-bottom: 60px;
         }
-        
-        .hero-title {
-            font-size: 64px;
-            font-weight: 800;
+
+        .header__title {
+            font-size: 56px;
+            font-weight: 700;
+            letter-spacing: -0.02em;
             background: linear-gradient(135deg, #fff, #ff3b3b);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 20px;
-            line-height: 1.2;
+            margin-bottom: 16px;
         }
-        
-        .hero-subtitle {
+
+        .header__subtitle {
             font-size: 18px;
             color: rgba(255, 255, 255, 0.6);
-            margin-bottom: 32px;
+            max-width: 600px;
+            margin: 0 auto;
         }
-        
-        .hero-buttons {
-            display: flex;
-            gap: 16px;
-            flex-wrap: wrap;
-        }
-        
-        .btn {
-            padding: 12px 28px;
-            border-radius: 40px;
-            font-weight: 500;
-            text-decoration: none;
-            transition: all 0.2s;
+
+        .header__badge {
             display: inline-block;
-            cursor: pointer;
-            border: none;
-            font-size: 15px;
+            background: rgba(255, 59, 59, 0.15);
+            color: #ff6b6b;
+            padding: 6px 14px;
+            border-radius: 40px;
+            font-size: 13px;
+            margin-top: 20px;
+            border: 1px solid rgba(255, 59, 59, 0.3);
         }
-        
-        .btn-primary {
-            background: #ff3b3b;
-            color: #fff;
+
+        /* Демо плеера */
+        .demo {
+            margin-bottom: 80px;
         }
-        
-        .btn-primary:hover {
-            background: #e02e2e;
-            transform: translateY(-2px);
-        }
-        
-        .btn-outline {
-            background: transparent;
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.2);
-        }
-        
-        .btn-outline:hover {
-            border-color: #ff3b3b;
-            background: rgba(255, 59, 59, 0.1);
-            transform: translateY(-2px);
-        }
-        
-        .demo-player {
-            background: rgba(0, 0, 0, 0.4);
+
+        .demo__player {
+            background: #000;
             border-radius: 20px;
-            padding: 8px;
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.05);
+            overflow: hidden;
+            box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.5);
         }
-        
-        /* Section Common */
-        .section {
-            margin-bottom: 100px;
+
+        /* Возможности */
+        .features {
+            margin-bottom: 80px;
         }
-        
+
         .section-title {
             font-size: 32px;
+            font-weight: 600;
             text-align: center;
             margin-bottom: 48px;
-            color: #fff;
         }
-        
+
         .section-title span {
             background: linear-gradient(135deg, #ff3b3b, #fff);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-        
-        /* Features Grid */
-        .features-grid {
+
+        .features__grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
             gap: 24px;
         }
-        
+
         .feature {
             background: rgba(255, 255, 255, 0.03);
             border-radius: 20px;
             padding: 28px;
             border: 1px solid rgba(255, 255, 255, 0.05);
-            transition: all 0.3s;
+            transition: all 0.25s ease;
         }
-        
+
         .feature:hover {
             background: rgba(255, 255, 255, 0.05);
             border-color: rgba(255, 59, 59, 0.3);
-            transform: translateY(-4px);
+            transform: translateY(-2px);
         }
-        
-        .feature-icon {
-            font-size: 40px;
+
+        .feature__icon {
+            font-size: 36px;
             margin-bottom: 16px;
         }
-        
-        .feature h3 {
+
+        .feature__title {
             font-size: 18px;
+            font-weight: 600;
             margin-bottom: 8px;
         }
-        
-        .feature p {
-            color: rgba(255, 255, 255, 0.5);
+
+        .feature__desc {
             font-size: 14px;
+            color: rgba(255, 255, 255, 0.5);
         }
-        
-        .feature code {
-            background: rgba(255, 255, 255, 0.1);
-            padding: 2px 6px;
-            border-radius: 6px;
-            font-size: 12px;
-        }
-        
-        /* Install Section */
-        .install-card {
-            background: rgba(255, 255, 255, 0.03);
+
+        /* Установка */
+        .install {
+            margin-bottom: 80px;
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 24px;
-            padding: 40px;
+            padding: 48px;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
-        .cdn-urls {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 24px;
-        }
-        
-        .cdn-item {
+
+        .install__code {
             background: #0a0a0a;
-            border-radius: 12px;
-            padding: 12px 16px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 12px;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        
-        .cdn-code {
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 13px;
-            color: #ff6b6b;
-            word-break: break-all;
-        }
-        
-        .copy-btn {
-            background: rgba(255, 255, 255, 0.1);
-            border: none;
-            color: #fff;
-            padding: 6px 16px;
-            border-radius: 20px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.2s;
-        }
-        
-        .copy-btn:hover {
-            background: #ff3b3b;
-        }
-        
-        .code-block {
-            background: #0a0a0a;
-            border-radius: 16px;
+            border-radius: 14px;
             padding: 20px;
             overflow-x: auto;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            margin: 24px 0;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 24px;
         }
-        
-        .code-block pre {
-            color: #00ff88;
-            font-family: 'Monaco', 'Courier New', monospace;
+
+        .install__code pre {
+            color: #4ade80;
+            font-family: 'SF Mono', 'Monaco', 'Courier New', monospace;
             font-size: 13px;
             line-height: 1.6;
             margin: 0;
         }
-        
-        /* Quick Start Steps */
-        .steps {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 24px;
-            margin-top: 32px;
+
+        .install__links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 16px;
+            justify-content: center;
         }
-        
+
+        .install__link {
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 40px;
+            padding: 10px 20px;
+            font-family: monospace;
+            font-size: 13px;
+            color: #ff6b6b;
+            text-decoration: none;
+            transition: all 0.2s;
+            border: 1px solid rgba(255, 255, 255, 0.08);
+        }
+
+        .install__link:hover {
+            background: rgba(255, 59, 59, 0.15);
+            border-color: #ff3b3b;
+        }
+
+        /* Быстрый старт */
+        .quickstart {
+            margin-bottom: 60px;
+        }
+
+        .quickstart__steps {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+        }
+
         .step {
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.02);
             border-radius: 20px;
             padding: 28px;
-            text-align: center;
             border: 1px solid rgba(255, 255, 255, 0.05);
         }
-        
-        .step-number {
-            width: 40px;
-            height: 40px;
+
+        .step__number {
+            width: 36px;
+            height: 36px;
             background: #ff3b3b;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 16px;
             font-weight: 700;
+            margin-bottom: 20px;
         }
-        
-        .step h3 {
+
+        .step__title {
             font-size: 18px;
+            font-weight: 600;
             margin-bottom: 12px;
         }
-        
-        .step p {
-            color: rgba(255, 255, 255, 0.5);
-            font-size: 14px;
-            margin-bottom: 16px;
-        }
-        
-        .step .mini-code {
+
+        .step__code {
             background: #0a0a0a;
-            padding: 10px;
             border-radius: 10px;
-            font-family: 'Monaco', 'Courier New', monospace;
-            font-size: 11px;
-            color: #00ff88;
+            padding: 12px;
+            font-family: monospace;
+            font-size: 12px;
+            color: #4ade80;
             overflow-x: auto;
+            margin-top: 12px;
         }
-        
+
+        /* Инфо блок */
         .info-note {
             background: rgba(255, 59, 59, 0.1);
             border-radius: 16px;
@@ -346,41 +241,44 @@
             margin-top: 32px;
             border-left: 3px solid #ff3b3b;
         }
-        
+
         .info-note p {
             color: rgba(255, 255, 255, 0.8);
             font-size: 14px;
         }
-        
+
         .info-note strong {
             color: #ff6b6b;
         }
-        
-        /* Footer */
+
+        /* Футер */
         .footer {
-            background: rgba(0, 0, 0, 0.3);
-            padding: 48px 24px 32px;
             text-align: center;
+            padding: 40px 24px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             margin-top: 40px;
         }
-        
-        .footer-logo {
-            font-size: 28px;
-            font-weight: 700;
+
+        .footer__logo {
+            font-size: 20px;
+            font-weight: 600;
             background: linear-gradient(135deg, #ff3b3b, #ff8c8c);
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
-            margin-bottom: 16px;
+            margin-bottom: 12px;
         }
-        
-        .footer p {
-            color: rgba(255, 255, 255, 0.4);
+
+        .footer__text {
             font-size: 13px;
+            color: rgba(255, 255, 255, 0.4);
         }
-        
-        /* Toast */
+
+        .footer__year {
+            color: #ff3b3b;
+        }
+
+        /* Уведомления */
         .toast {
             position: fixed;
             bottom: 24px;
@@ -395,7 +293,7 @@
             border: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 14px;
         }
-        
+
         @keyframes fadeInUp {
             from {
                 opacity: 0;
@@ -406,203 +304,137 @@
                 transform: translateY(0);
             }
         }
-        
-        /* Responsive */
+
+        /* Адаптивность */
         @media (max-width: 768px) {
-            .hero {
-                grid-template-columns: 1fr;
-                text-align: center;
-                gap: 40px;
+            .container {
+                padding: 60px 20px 32px;
             }
             
-            .hero-title {
-                font-size: 44px;
+            .header__title {
+                font-size: 40px;
             }
             
-            .hero-buttons {
-                justify-content: center;
+            .install {
+                padding: 28px;
             }
-            
-            .steps {
-                grid-template-columns: 1fr;
-            }
-            
-            .nav-links {
-                display: none;
-            }
-            
-            .section-title {
-                font-size: 28px;
-            }
-            
-            .install-card {
-                padding: 24px;
-            }
-        }
-        
-        /* Animation */
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-        
-        .hero, .section {
-            animation: fadeIn 0.6s ease-out;
         }
     </style>
 </head>
 <body>
-    <nav class="nav">
-        <div class="nav-inner">
-            <div class="logo">TPlayer</div>
-            <div class="nav-links">
-                <a href="#features">Возможности</a>
-                <a href="#install">Установка</a>
-                <a href="#quickstart">Быстрый старт</a>
-            </div>
-        </div>
-    </nav>
-    
     <div class="container">
-        <!-- Hero Section -->
-        <section class="hero">
-            <div>
-                <h1 class="hero-title">TPlayer</h1>
-                <p class="hero-subtitle">Профессиональный видеоплеер с умным определением качества и сжатием на лету</p>
-                <div class="hero-buttons">
-                    <a href="#install" class="btn btn-primary">Начать использовать</a>
-                    <a href="#features" class="btn btn-outline">Подробнее</a>
-                </div>
-            </div>
-            <div class="demo-player">
-                <div id="player-container"></div>
+        <!-- Шапка -->
+        <header class="header">
+            <h1 class="header__title">TPlayer</h1>
+            <p class="header__subtitle">Профессиональный видеоплеер. Минимализм. Мощь. Простота.</p>
+            <div class="header__badge">⚡ Установка через CDN | Автоопределение качества</div>
+        </header>
+
+        <!-- Демо плеера с локальным видео -->
+        <section class="demo">
+            <div class="demo__player">
+                <div id="tplayer"></div>
             </div>
         </section>
-        
-        <!-- Features Section -->
-        <section id="features" class="section">
+
+        <!-- Возможности -->
+        <section class="features">
             <h2 class="section-title">Ключевые <span>возможности</span></h2>
-            <div class="features-grid">
+            <div class="features__grid">
                 <div class="feature">
-                    <div class="feature-icon">⚡</div>
-                    <h3>Простая инициализация</h3>
-                    <p>Всего одна строка — <code>source: "video.mp4"</code></p>
+                    <div class="feature__icon">⚡</div>
+                    <h3 class="feature__title">Минимальная конфигурация</h3>
+                    <p class="feature__desc">Достаточно указать source — плеер сделает всё сам</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">🎯</div>
-                    <h3>Умное определение качества</h3>
-                    <p>Автоматически определяет разрешение видео и создаёт меню выбора</p>
+                    <div class="feature__icon">🎯</div>
+                    <h3 class="feature__title">Автоопределение качества</h3>
+                    <p class="feature__desc">Плеер сам определит разрешение вашего видео</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">🔄</div>
-                    <h3>Сжатие на лету</h3>
-                    <p>При выборе низкого качества видео сжимается без потери времени</p>
+                    <div class="feature__icon">⌨️</div>
+                    <h3 class="feature__title">Горячие клавиши</h3>
+                    <p class="feature__desc">Пробел, стрелки, F, M, ↑, ↓ — полный контроль</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">🎨</div>
-                    <h3>Кастомизация</h3>
-                    <p>Лёгкая настройка через CSS-переменные и акцентный цвет</p>
+                    <div class="feature__icon">🎨</div>
+                    <h3 class="feature__title">Кастомизация</h3>
+                    <p class="feature__desc">Любой акцентный цвет под ваш бренд</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">⌨️</div>
-                    <h3>Горячие клавиши</h3>
-                    <p>Пробел, стрелки, F, M — полный контроль с клавиатуры</p>
+                    <div class="feature__icon">📱</div>
+                    <h3 class="feature__title">Адаптивность</h3>
+                    <p class="feature__desc">Идеально работает на любых устройствах</p>
                 </div>
                 <div class="feature">
-                    <div class="feature-icon">📱</div>
-                    <h3>Адаптивный дизайн</h3>
-                    <p>Идеально работает на всех устройствах</p>
+                    <div class="feature__icon">🔧</div>
+                    <h3 class="feature__title">Без зависимостей</h3>
+                    <p class="feature__desc">Чистый JavaScript, ничего лишнего</p>
                 </div>
             </div>
         </section>
-        
-        <!-- Install Section -->
-        <section id="install" class="section">
-            <h2 class="section-title"><span>Установка</span></h2>
-            <div class="install-card">
-                <div class="cdn-urls">
-                    <div class="cdn-item">
-                        <code class="cdn-code">https://timoshamoscow.github.io/tplayer/player.css</code>
-                        <button class="copy-btn" onclick="copyToClipboard('https://timoshamoscow.github.io/tplayer/player.css')">Копировать</button>
-                    </div>
-                    <div class="cdn-item">
-                        <code class="cdn-code">https://timoshamoscow.github.io/tplayer/player.js</code>
-                        <button class="copy-btn" onclick="copyToClipboard('https://timoshamoscow.github.io/tplayer/player.js')">Копировать</button>
-                    </div>
-                </div>
-                
-                <div class="code-block">
-                    <pre>&lt;link rel="stylesheet" href="https://timoshamoscow.github.io/tplayer/player.css"&gt;
-&lt;script src="https://timoshamoscow.github.io/tplayer/player.js"&gt;&lt;/script&gt;</pre>
-                </div>
-                
-                <div class="info-note">
-                    <p>📌 TPlayer распространяется только через CDN — это обеспечивает автоматическое обновление и лучшую производительность.</p>
-                </div>
+
+        <!-- Установка -->
+        <section class="install">
+            <h2 class="section-title">Установка</h2>
+            <div class="install__code">
+                <pre>&lt;link rel="stylesheet" href="https://timoshamoscow.github.io/tplayer/player.css"&gt;
+&lt;script src="https://timoshamoscow.github.io/tplayer/player.js"&gt;&lt;/script&gt;
+
+&lt;div id="player"&gt;&lt;/div&gt;
+
+&lt;script&gt;
+    const player = new TPlayer('#player', {
+        source: 'test.mp4',
+        poster: 'poster.jpg',
+        accentColor: '#ff3b3b'
+    });
+&lt;/script&gt;</pre>
+            </div>
+            <div class="install__links">
+                <a href="https://timoshamoscow.github.io/tplayer/player.css" class="install__link" target="_blank">player.css</a>
+                <a href="https://timoshamoscow.github.io/tplayer/player.js" class="install__link" target="_blank">player.js</a>
             </div>
         </section>
-        
-        <!-- Quick Start Section -->
-        <section id="quickstart" class="section">
-            <h2 class="section-title"><span>Быстрый старт</span></h2>
-            <div class="steps">
+
+        <!-- Быстрый старт -->
+        <section class="quickstart">
+            <div class="quickstart__steps">
                 <div class="step">
-                    <div class="step-number">1</div>
-                    <h3>Подключите CDN</h3>
-                    <p>Добавьте ссылки в ваш HTML</p>
-                    <div class="mini-code">&lt;link href="player.css"&gt;<br>&lt;script src="player.js"&gt;</div>
+                    <div class="step__number">1</div>
+                    <h3 class="step__title">Подключите CDN</h3>
+                    <div class="step__code">&lt;link href="player.css"&gt;<br>&lt;script src="player.js"&gt;</div>
                 </div>
                 <div class="step">
-                    <div class="step-number">2</div>
-                    <h3>Добавьте контейнер</h3>
-                    <p>Создайте элемент для плеера</p>
-                    <div class="mini-code">&lt;div id="player"&gt;&lt;/div&gt;</div>
+                    <div class="step__number">2</div>
+                    <h3 class="step__title">Добавьте контейнер</h3>
+                    <div class="step__code">&lt;div id="player"&gt;&lt;/div&gt;</div>
                 </div>
                 <div class="step">
-                    <div class="step-number">3</div>
-                    <h3>Инициализируйте</h3>
-                    <p>Укажите источник видео</p>
-                    <div class="mini-code">new TPlayer('#player', {<br>&nbsp;&nbsp;source: 'video.mp4'<br>});</div>
+                    <div class="step__number">3</div>
+                    <h3 class="step__title">Инициализируйте</h3>
+                    <div class="step__code">new TPlayer('#player', {<br>  source: 'test.mp4',<br>  poster: 'poster.jpg'<br>});</div>
                 </div>
-            </div>
-            
-            <div class="code-block" style="margin-top: 32px;">
-                <pre>const player = new TPlayer('#player-container', {
-    source: 'test.mp4',      // ваше видео
-    poster: 'poster.jpg',    // постер (опционально)
-    accentColor: '#ff3b3b'   // акцентный цвет
-});</pre>
             </div>
             
             <div class="info-note">
-                <p>💡 <strong>Всё работает из коробки!</strong> Плеер сам определит качество вашего видео и создаст меню выбора. Опция <strong>"Оригинал"</strong> позволяет вернуться к исходному качеству в любой момент.</p>
+                <p>💡 <strong>Простота использования:</strong> Вам не нужно указывать разные качества видео. Просто укажите <strong>source: "test.mp4"</strong> и плеер сам определит качество! Опция <strong>"Оригинал"</strong> в меню качества позволяет вернуться к исходному видео.</p>
             </div>
         </section>
     </div>
-    
+
+    <!-- Футер -->
     <footer class="footer">
-        <div class="footer-logo">TStudios</div>
-        <p>© 2026 TStudios. Профессиональные решения для ваших проектов.</p>
-        <p style="margin-top: 8px; font-size: 12px;">TPlayer — современный видеоплеер с открытым исходным кодом</p>
+        <div class="footer__logo">TStudios</div>
+        <p class="footer__text">© <span class="footer__year" id="current-year">2026</span> TStudios. Все права защищены.</p>
+        <p class="footer__text">TPlayer — современный видеоплеер с открытым исходным кодом</p>
     </footer>
-    
-    <!-- TPlayer JS -->
+
+    <!-- Подключение TPlayer -->
     <script src="https://timoshamoscow.github.io/tplayer/player.js"></script>
     
     <script>
-        // Копирование в буфер обмена
-        function copyToClipboard(text) {
-            navigator.clipboard.writeText(text).then(() => {
-                showToast('Скопировано!');
-            });
-        }
-        
+        // Функция показа уведомлений
         function showToast(message) {
             const toast = document.createElement('div');
             toast.className = 'toast';
@@ -610,26 +442,35 @@
             document.body.appendChild(toast);
             setTimeout(() => toast.remove(), 2000);
         }
-        
-        // Инициализация плеера с локальными ресурсами
+
+        // Установка текущего года
+        const yearSpan = document.getElementById('current-year');
+        if (yearSpan) {
+            yearSpan.textContent = new Date().getFullYear();
+        }
+
+        // Инициализация плеера с ЛОКАЛЬНЫМИ ресурсами
         // Убедитесь, что файлы test.mp4 и poster.jpg находятся в той же папке
-        const player = new TPlayer('#player-container', {
+        const player = new TPlayer('#tplayer', {
             source: 'test.mp4',
             poster: 'poster.jpg',
             accentColor: '#ff3b3b'
         });
-        
-        // Плавный скролл
+
+        // Плавная прокрутка
         document.querySelectorAll('a[href^="#"]').forEach(anchor => {
             anchor.addEventListener('click', function(e) {
                 e.preventDefault();
                 const target = document.querySelector(this.getAttribute('href'));
-                if (target) target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                if (target) {
+                    target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                }
             });
         });
-        
-        console.log('%c TPlayer готов к работе!', 'color: #ff3b3b; font-size: 14px;');
-        console.log('%c Используются локальные файлы: test.mp4, poster.jpg', 'color: #888;');
+
+        console.log('%c TPlayer v3.0.0 готов к работе!', 'color: #ff3b3b; font-size: 14px; font-weight: bold;');
+        console.log('%c Используются локальные файлы: test.mp4, poster.jpg', 'color: #4ade80;');
+        console.log('%c Документация: https://timoshamoscow.github.io/tplayer/', 'color: #888;');
     </script>
 </body>
 </html>
