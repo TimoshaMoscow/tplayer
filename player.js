@@ -2,7 +2,7 @@
  * ================================================================
  * Разработано TStudios
  * TPlayer - Профессиональная JavaScript библиотека видеоплеера
- * Версия: 2.1.0
+ * Версия: 2.2.0
  * Лицензия: MIT
  * ================================================================
  */
@@ -43,12 +43,14 @@ class TPlayer {
         this.isControlsVisible = true;
         this.controlsTimeout = null;
         this.compressedVideoUrl = null;
+        this.isCompressed = false;
         
         // Доступные качества (в порядке возрастания)
         this.qualityLevels = ['144p', '240p', '360p', '480p', '720p', '1080p', '1440p', '2160p'];
         this.availableQualities = [];
         this.originalVideoUrl = null;
         this.originalVideoHeight = null;
+        this.originalVideoWidth = null;
         
         // Доступные скорости
         this.speeds = [0.5, 0.75, 1, 1.25, 1.5, 2];
@@ -214,6 +216,7 @@ class TPlayer {
             const videoWidth = this.video.videoWidth;
             const videoHeight = this.video.videoHeight;
             this.originalVideoHeight = videoHeight;
+            this.originalVideoWidth = videoWidth;
             
             // Определяем качество на основе высоты видео
             let detectedQuality = '360p';
@@ -409,104 +412,191 @@ class TPlayer {
     }
     
     /**
-     * Сжатие видео для более низкого качества
+     * Сохранение состояния видео (громкость, muted)
      */
-    async changeQuality(quality) {
+    saveVideoState() {
+        return {
+            currentTime: this.video.currentTime,
+            volume: this.video.volume,
+            muted: this.video.muted,
+            playbackRate: this.video.playbackRate,
+            wasPlaying: !this.video.paused
+        };
+    }
+    
+    /**
+     * Восстановление состояния видео
+     */
+    restoreVideoState(state, callback) {
+        this.video.volume = state.volume;
+        this.video.muted = state.muted;
+        this.video.playbackRate = state.playbackRate;
+        
+        // Обновляем UI громкости
+        this.volumeProgress.style.width = `${state.volume * 100}%`;
+        
+        const onCanPlay = () => {
+            this.video.currentTime = state.currentTime;
+            if (state.wasPlaying) {
+                this.video.play();
+            }
+            this.video.removeEventListener('canplay', onCanPlay);
+            if (callback) callback();
+        };
+        
+        this.video.addEventListener('canplay', onCanPlay);
+    }
+    
+    /**
+     * Смена качества видео (без потери звука и синхронизации)
+     */
+    changeQuality(quality) {
         if (quality === this.currentQuality) return;
         
-        const currentTime = this.video.currentTime;
-        const wasPlaying = !this.video.paused;
+        // Сохраняем состояние видео
+        const state = this.saveVideoState();
+        
+        // Показываем индикатор загрузки
+        this.showLoading();
         
         // Если выбран "Оригинал" - возвращаем исходное видео
         if (quality === 'Оригинал') {
-            this.video.src = this.originalVideoUrl;
-            this.currentQuality = quality;
-            
-            this.video.addEventListener('loadedmetadata', () => {
-                this.video.currentTime = currentTime;
-                if (wasPlaying) this.video.play();
+            // Если текущее видео уже оригинал, просто обновляем UI
+            if (this.video.src === this.originalVideoUrl) {
+                this.currentQuality = quality;
                 this.updateQualityMenu();
-                if (this.compressedVideoUrl) {
-                    URL.revokeObjectURL(this.compressedVideoUrl);
-                    this.compressedVideoUrl = null;
-                }
-            }, { once: true });
+                this.hideLoading();
+                return;
+            }
+            
+            // Освобождаем ресурсы сжатого видео
+            if (this.compressedVideoUrl) {
+                URL.revokeObjectURL(this.compressedVideoUrl);
+                this.compressedVideoUrl = null;
+            }
+            
+            this.video.src = this.originalVideoUrl;
+            this.isCompressed = false;
+            
+            this.restoreVideoState(state, () => {
+                this.currentQuality = quality;
+                this.updateQualityMenu();
+                this.hideLoading();
+            });
             return;
         }
         
-        const qualityHeight = this.getQualityHeight(quality);
+        // Определяем реальное качество (без слова "Оригинал")
+        const realQuality = quality;
+        const qualityHeight = this.getQualityHeight(realQuality);
         
         // Если выбранное качество выше или равно оригинальному, используем оригинал
         if (qualityHeight >= this.originalVideoHeight) {
-            this.video.src = this.originalVideoUrl;
-            this.currentQuality = quality;
-            
-            this.video.addEventListener('loadedmetadata', () => {
-                this.video.currentTime = currentTime;
-                if (wasPlaying) this.video.play();
+            if (this.video.src === this.originalVideoUrl) {
+                this.currentQuality = quality;
                 this.updateQualityMenu();
-            }, { once: true });
+                this.hideLoading();
+                return;
+            }
+            
+            if (this.compressedVideoUrl) {
+                URL.revokeObjectURL(this.compressedVideoUrl);
+                this.compressedVideoUrl = null;
+            }
+            
+            this.video.src = this.originalVideoUrl;
+            this.isCompressed = false;
+            
+            this.restoreVideoState(state, () => {
+                this.currentQuality = quality;
+                this.updateQualityMenu();
+                this.hideLoading();
+            });
             return;
         }
         
         // Сжатие видео до более низкого качества
-        this.showLoading();
-        
+        this.compressVideo(realQuality, qualityHeight, state);
+    }
+    
+    /**
+     * Сжатие видео до указанного качества
+     */
+    async compressVideo(targetQuality, targetHeight, originalState) {
         try {
             // Создаем видео элемент для захвата кадров
             const tempVideo = document.createElement('video');
             tempVideo.src = this.originalVideoUrl;
             tempVideo.crossOrigin = 'Anonymous';
+            tempVideo.muted = true; // Заглушаем временное видео
             
             await new Promise((resolve) => {
-                tempVideo.addEventListener('loadedmetadata', resolve);
+                tempVideo.addEventListener('loadedmetadata', resolve, { once: true });
             });
             
-            tempVideo.currentTime = currentTime;
+            // Устанавливаем время на позицию сохранения
+            tempVideo.currentTime = originalState.currentTime;
             
             await new Promise((resolve) => {
-                tempVideo.addEventListener('seeked', resolve);
+                tempVideo.addEventListener('seeked', resolve, { once: true });
             });
             
             // Создаем canvas для перекодирования
             const canvas = document.createElement('canvas');
             const ctx = canvas.getContext('2d');
             
-            const scaleFactor = qualityHeight / this.originalVideoHeight;
-            canvas.width = this.video.videoWidth * scaleFactor;
-            canvas.height = qualityHeight;
+            const scaleFactor = targetHeight / this.originalVideoHeight;
+            canvas.width = this.originalVideoWidth * scaleFactor;
+            canvas.height = targetHeight;
             
             // Создаем поток для записи
             const stream = canvas.captureStream(30);
+            
+            // Определяем поддерживаемый MIME тип
+            const mimeTypes = ['video/webm', 'video/mp4', 'video/x-matroska'];
+            let selectedMimeType = 'video/webm';
+            for (const type of mimeTypes) {
+                if (MediaRecorder.isTypeSupported(type)) {
+                    selectedMimeType = type;
+                    break;
+                }
+            }
+            
             const mediaRecorder = new MediaRecorder(stream, {
-                mimeType: 'video/webm',
+                mimeType: selectedMimeType,
                 videoBitsPerSecond: 2500000
             });
             
             const chunks = [];
-            mediaRecorder.ondataavailable = (e) => chunks.push(e.data);
+            mediaRecorder.ondataavailable = (e) => {
+                if (e.data.size > 0) chunks.push(e.data);
+            };
             
             const recordedVideo = new Promise((resolve) => {
                 mediaRecorder.onstop = () => {
-                    const blob = new Blob(chunks, { type: 'video/webm' });
+                    const blob = new Blob(chunks, { type: selectedMimeType });
                     const url = URL.createObjectURL(blob);
                     resolve(url);
                 };
             });
             
+            // Записываем 5 секунд видео для создания сжатой версии
             mediaRecorder.start();
             
-            // Захватываем кадры
-            const duration = Math.min(10, this.video.duration - currentTime);
-            const startTime = currentTime;
+            const recordDuration = Math.min(5, this.video.duration - originalState.currentTime);
+            const startTime = originalState.currentTime;
+            let frameCount = 0;
             
             const captureFrame = () => {
-                if (tempVideo.currentTime >= startTime + duration || tempVideo.ended) {
-                    mediaRecorder.stop();
+                if (frameCount >= 150 || tempVideo.ended || tempVideo.currentTime >= startTime + recordDuration) {
+                    if (mediaRecorder.state === 'recording') {
+                        mediaRecorder.stop();
+                    }
                     return;
                 }
                 
                 ctx.drawImage(tempVideo, 0, 0, canvas.width, canvas.height);
+                frameCount++;
                 requestAnimationFrame(captureFrame);
             };
             
@@ -515,6 +605,7 @@ class TPlayer {
             
             const compressedUrl = await recordedVideo;
             tempVideo.pause();
+            tempVideo.src = '';
             
             // Освобождаем предыдущий сжатый URL если есть
             if (this.compressedVideoUrl) {
@@ -523,22 +614,54 @@ class TPlayer {
             
             this.compressedVideoUrl = compressedUrl;
             this.video.src = compressedUrl;
-            this.currentQuality = quality;
+            this.isCompressed = true;
             
-            this.video.addEventListener('loadedmetadata', () => {
-                this.video.currentTime = currentTime;
-                if (wasPlaying) this.video.play();
+            // Восстанавливаем состояние (громкость, muted, время)
+            this.video.volume = originalState.volume;
+            this.video.muted = originalState.muted;
+            this.video.playbackRate = originalState.playbackRate;
+            this.volumeProgress.style.width = `${originalState.volume * 100}%`;
+            
+            const onCanPlay = () => {
+                this.video.currentTime = originalState.currentTime;
+                if (originalState.wasPlaying) {
+                    this.video.play();
+                }
+                this.video.removeEventListener('canplay', onCanPlay);
+                this.currentQuality = targetQuality;
                 this.updateQualityMenu();
                 this.hideLoading();
-            }, { once: true });
+            };
+            
+            this.video.addEventListener('canplay', onCanPlay, { once: true });
+            
+            // Таймаут на случай если событие canplay не сработает
+            setTimeout(() => {
+                if (this.video.readyState < 2) {
+                    this.video.removeEventListener('canplay', onCanPlay);
+                    onCanPlay();
+                }
+            }, 3000);
             
         } catch (error) {
             console.error('TPlayer: Ошибка при сжатии видео:', error);
             this.hideLoading();
-            // Если сжатие не удалось, используем оригинал
+            
+            // Восстанавливаем оригинальное видео при ошибке
             this.video.src = this.originalVideoUrl;
-            this.video.currentTime = currentTime;
-            if (wasPlaying) this.video.play();
+            this.video.volume = originalState.volume;
+            this.video.muted = originalState.muted;
+            this.video.playbackRate = originalState.playbackRate;
+            this.volumeProgress.style.width = `${originalState.volume * 100}%`;
+            
+            const onCanPlay = () => {
+                this.video.currentTime = originalState.currentTime;
+                if (originalState.wasPlaying) {
+                    this.video.play();
+                }
+                this.video.removeEventListener('canplay', onCanPlay);
+            };
+            this.video.addEventListener('canplay', onCanPlay, { once: true });
         }
     }
     
@@ -636,17 +759,19 @@ class TPlayer {
      * Обновление прогресса
      */
     updateProgress() {
-        const percent = (this.video.currentTime / this.video.duration) * 100;
-        this.progressFilled.style.width = `${percent}%`;
-        this.progressHandle.style.left = `${percent}%`;
-        this.currentTimeSpan.textContent = this.formatTime(this.video.currentTime);
+        if (this.video.duration && !isNaN(this.video.duration)) {
+            const percent = (this.video.currentTime / this.video.duration) * 100;
+            this.progressFilled.style.width = `${percent}%`;
+            this.progressHandle.style.left = `${percent}%`;
+            this.currentTimeSpan.textContent = this.formatTime(this.video.currentTime);
+        }
     }
     
     /**
      * Обновление буферизации
      */
     updateBuffered() {
-        if (this.video.buffered.length > 0) {
+        if (this.video.buffered.length > 0 && this.video.duration) {
             const bufferedEnd = this.video.buffered.end(this.video.buffered.length - 1);
             const percent = (bufferedEnd / this.video.duration) * 100;
             this.progressBuffered.style.width = `${percent}%`;
@@ -657,7 +782,9 @@ class TPlayer {
      * Обновление длительности
      */
     updateDuration() {
-        this.durationSpan.textContent = this.formatTime(this.video.duration);
+        if (!isNaN(this.video.duration)) {
+            this.durationSpan.textContent = this.formatTime(this.video.duration);
+        }
     }
     
     /**
@@ -745,7 +872,7 @@ class TPlayer {
      * Форматирование времени
      */
     formatTime(seconds) {
-        if (isNaN(seconds)) return '00:00';
+        if (isNaN(seconds) || !isFinite(seconds)) return '00:00';
         const hours = Math.floor(seconds / 3600);
         const mins = Math.floor((seconds % 3600) / 60);
         const secs = Math.floor(seconds % 60);
@@ -764,6 +891,7 @@ class TPlayer {
         this.video.src = '';
         if (this.compressedVideoUrl) {
             URL.revokeObjectURL(this.compressedVideoUrl);
+            this.compressedVideoUrl = null;
         }
         this.container.innerHTML = '';
         console.log('TPlayer: Плеер уничтожен');
