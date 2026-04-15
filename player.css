@@ -232,7 +232,7 @@
 }
 
 .tplayer__menu-item--active {
-    color: #ff0000;
+    color: #ffffff;  /* ← ТОЛЬКО ЭТО ИЗМЕНИЛОСЬ */
     font-weight: 500;
 }
 
