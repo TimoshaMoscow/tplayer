@@ -217,6 +217,13 @@
             font-size: 14px;
         }
         
+        .feature code {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 2px 6px;
+            border-radius: 6px;
+            font-size: 12px;
+        }
+        
         /* Install Section */
         .install-card {
             background: rgba(255, 255, 255, 0.03);
@@ -283,18 +290,6 @@
             margin: 0;
         }
         
-        .code-block .tag {
-            color: #ff6b6b;
-        }
-        
-        .code-block .attr {
-            color: #ffd93d;
-        }
-        
-        .code-block .string {
-            color: #6bcb77;
-        }
-        
         /* Quick Start Steps */
         .steps {
             display: grid;
@@ -338,8 +333,8 @@
             background: #0a0a0a;
             padding: 10px;
             border-radius: 10px;
-            font-family: monospace;
-            font-size: 12px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 11px;
             color: #00ff88;
             overflow-x: auto;
         }
@@ -497,7 +492,7 @@
                 <div class="feature">
                     <div class="feature-icon">⚡</div>
                     <h3>Простая инициализация</h3>
-                    <p>Всего одна строка — <code style="background: rgba(255,255,255,0.1); padding: 2px 6px; border-radius: 4px;">source: "video.mp4"</code></p>
+                    <p>Всего одна строка — <code>source: "video.mp4"</code></p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">🎯</div>
@@ -512,12 +507,12 @@
                 <div class="feature">
                     <div class="feature-icon">🎨</div>
                     <h3>Кастомизация</h3>
-                    <p>Лёгкая настройка через CSS-переменные</p>
+                    <p>Лёгкая настройка через CSS-переменные и акцентный цвет</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">⌨️</div>
                     <h3>Горячие клавиши</h3>
-                    <p>Пробел, стрелки, F, M — полный контроль</p>
+                    <p>Пробел, стрелки, F, M — полный контроль с клавиатуры</p>
                 </div>
                 <div class="feature">
                     <div class="feature-icon">📱</div>
@@ -543,8 +538,8 @@
                 </div>
                 
                 <div class="code-block">
-                    <pre><span class="tag">&lt;link</span> <span class="attr">rel=</span><span class="string">"stylesheet"</span> <span class="attr">href=</span><span class="string">"https://timoshamoscow.github.io/tplayer/player.css"</span><span class="tag">&gt;</span>
-<span class="tag">&lt;script</span> <span class="attr">src=</span><span class="string">"https://timoshamoscow.github.io/tplayer/player.js"</span><span class="tag">&gt;&lt;/script&gt;</span></pre>
+                    <pre>&lt;link rel="stylesheet" href="https://timoshamoscow.github.io/tplayer/player.css"&gt;
+&lt;script src="https://timoshamoscow.github.io/tplayer/player.js"&gt;&lt;/script&gt;</pre>
                 </div>
                 
                 <div class="info-note">
@@ -578,15 +573,15 @@
             </div>
             
             <div class="code-block" style="margin-top: 32px;">
-                <pre><span style="color:#ff6b6b;">const</span> <span style="color:#ffd93d;">player</span> = <span style="color:#ff6b6b;">new</span> <span style="color:#6bcb77;">TPlayer</span>(<span style="color:#ffd93d;">'#player-container'</span>, {
-    <span style="color:#ffd93d;">source</span>: <span style="color:#6bcb77;">'test.mp4'</span>,      <span style="color:#888;">// ваше видео</span>
-    <span style="color:#ffd93d;">poster</span>: <span style="color:#6bcb77;">'poster.jpg'</span>,    <span style="color:#888;">// постер (опционально)</span>
-    <span style="color:#ffd93d;">accentColor</span>: <span style="color:#6bcb77;">'#ff3b3b'</span>    <span style="color:#888;">// акцентный цвет</span>
+                <pre>const player = new TPlayer('#player-container', {
+    source: 'test.mp4',      // ваше видео
+    poster: 'poster.jpg',    // постер (опционально)
+    accentColor: '#ff3b3b'   // акцентный цвет
 });</pre>
             </div>
             
             <div class="info-note">
-                <p>💡 <strong>Всё работает из коробки!</strong> Плеер сам определит качество видео и создаст меню выбора. Опция <strong>"Оригинал"</strong> позволяет вернуться к исходному качеству в любой момент.</p>
+                <p>💡 <strong>Всё работает из коробки!</strong> Плеер сам определит качество вашего видео и создаст меню выбора. Опция <strong>"Оригинал"</strong> позволяет вернуться к исходному качеству в любой момент.</p>
             </div>
         </section>
     </div>
@@ -616,10 +611,11 @@
             setTimeout(() => toast.remove(), 2000);
         }
         
-        // Инициализация плеера с тестовым видео
+        // Инициализация плеера с локальными ресурсами
+        // Убедитесь, что файлы test.mp4 и poster.jpg находятся в той же папке
         const player = new TPlayer('#player-container', {
-            source: 'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ForBiggerBlazes.mp4',
-            poster: 'https://images.unsplash.com/photo-1485846234645-a62644f84728?w=1280',
+            source: 'test.mp4',
+            poster: 'poster.jpg',
             accentColor: '#ff3b3b'
         });
         
@@ -633,6 +629,7 @@
         });
         
         console.log('%c TPlayer готов к работе!', 'color: #ff3b3b; font-size: 14px;');
+        console.log('%c Используются локальные файлы: test.mp4, poster.jpg', 'color: #888;');
     </script>
 </body>
 </html>
